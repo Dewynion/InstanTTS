@@ -1,0 +1,199 @@
+﻿<Window x:Class="InstanTTS.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InstanTTS"
+        xmlns:helper="clr-namespace:InstanTTS.Interface.Controls"
+        mc:Ignorable="d"
+        Title="InstanTTS" Height ="600" MinHeight="600" Width="650" MinWidth="650">
+    <!--Overarching tab panel.-->
+    <TabControl>
+        <!--Tab for speech-related functions and options.-->
+        <TabItem Header="Speech">
+            <!--"Master" grid - textbox + speech button occupies the bottom-->
+            <Grid Margin="5, 5, 0, 5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="25"/>
+                </Grid.RowDefinitions>
+
+                <!--grid containing speech history/voice options-->
+                <Grid Grid.Row="0">
+                    <!--Contains the speech history and voice options (voice, rate, etc).-->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="150"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!--Label for speech history.-->
+                        <TextBlock Text="History:" Grid.Row="0"/>
+
+                        <!--Speech history.-->
+                        <Border Grid.Row="1" BorderThickness="1" BorderBrush="Gray">
+                            <ListBox Name="speechHistory" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel VerticalAlignment="Bottom"/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Width="Auto">
+                                            <Border BorderThickness="1" BorderBrush="LightGray">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="50"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!--Template for displaying information from a SpeechString object.-->
+                                                    <StackPanel Orientation="Vertical" Grid.Column="0">
+                                                        <TextBlock TextWrapping="Wrap">
+                                                            <TextBlock.Inlines>
+                                                                <Run FontWeight="Bold" FontSize="12">
+                                                                    <MultiBinding StringFormat="Voice: {0} on device {1}">
+                                                                        <Binding Path="Voice.VoiceInfo.Name" Mode="OneWay"/>
+                                                                        <Binding Path="Device.Name" Mode="OneWay"/>
+                                                                    </MultiBinding>
+                                                                </Run>
+                                                            </TextBlock.Inlines>
+                                                        </TextBlock>
+
+                                                        <TextBlock TextWrapping="Wrap">
+                                                            <TextBlock.Inlines>
+                                                                <Run FontWeight="Bold" FontSize="12">
+                                                                    <MultiBinding StringFormat="Rate = {0}, Volume = {1}">
+                                                                        <Binding Path="Rate" Mode="OneWay"/>
+                                                                        <Binding Path="Volume" Mode="OneWay"/>
+                                                                    </MultiBinding>
+                                                                </Run>
+                                                            </TextBlock.Inlines>
+                                                        </TextBlock>
+
+                                                        <TextBlock TextWrapping="Wrap">
+                                                            <TextBlock.Inlines>
+                                                                <Run FontSize="12">
+                                                                    <MultiBinding StringFormat=" {0}">
+                                                                        <Binding Path="Text" Mode="OneWay"/>
+                                                                    </MultiBinding>
+                                                                </Run>
+                                                            </TextBlock.Inlines>
+                                                        </TextBlock>
+                                                    </StackPanel>
+
+                                                    <!--Button to repeat this SpeechString with all parameters.-->
+                                                    <Button Name="speechRepeat" ToolTip="Repeat" Width="25" Height="25" Grid.Column="1"/>
+                                                </Grid>
+                                            </Border>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Border>
+                    </Grid>
+
+                    <!--Voice options.-->
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <!--Voice selector-->
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="25"/>
+                            <!--margin row because yeah sure-->
+                            <RowDefinition Height="10"/>
+                            
+                            <!--Rate slider + field-->
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="20"/>
+                            
+                            <RowDefinition Height="10"/>
+                            
+                            <!--Volume slider + field-->
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="20"/>
+                            
+                            <RowDefinition Height="10"/>
+                            
+                            <!--TTS queue-->
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!--choose a voice-->
+                        <TextBlock HorizontalAlignment="Center" Grid.Row="0">Voice:</TextBlock>
+                        <ComboBox Name="speechVoices" Margin="10,0" Grid.Row="1">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=VoiceInfo.Name}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                        <!--Speech rate text box, slider.-->
+                        <Grid Grid.Row="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" HorizontalAlignment="Right" Text="Rate: " Width="65"/>
+                            <TextBox Name="speechRate" Grid.Column="1" HorizontalAlignment="Left" LostFocus="speechRate_LostFocus"
+                                     Text="{Binding Path=Value, ElementName=speechRateSlider, UpdateSourceTrigger=PropertyChanged}" Width="65"/>
+                        </Grid>
+                        <Slider Name="speechRateSlider" TickFrequency="1" IsSnapToTickEnabled="True" Grid.Row="4" Margin="10,0"/>
+
+                        <!--Volume text box and slider.-->
+                        <Grid Grid.Row="6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" HorizontalAlignment="Right" Text="Volume: " Width="65"/>
+                            <TextBox Name="speechVolume" Grid.Column="1" HorizontalAlignment="Left" LostFocus="speechVolume_LostFocus"
+                                     Text="{Binding Path=Value, ElementName=speechVolumeSlider, UpdateSourceTrigger=PropertyChanged}" Width="65"/>
+                        </Grid>
+                        <Slider Name="speechVolumeSlider" TickFrequency="5" IsSnapToTickEnabled="True" Margin="10,0" Grid.Row="7"/>
+
+                        <!--Displays the queue of TTS to be played.-->
+                        <Border Margin="10, 0" BorderThickness="1" BorderBrush="Gray" Grid.Row="9">
+                        </Border>
+                    </Grid>
+                </Grid>
+
+                <!--Text input + speech button.-->
+                <Grid Grid.Row="2" Margin="0,0,10,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="50"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Name="speechContent" Width="Auto" KeyDown="speechContent_KeyDown" Grid.Column="0"/>
+                    <Button Name="speechButton" Width="50" Click="speechButton_Click" Grid.Column="1">Say it!</Button>
+                </Grid>
+            </Grid>
+        </TabItem>
+
+        <!--Settings for audio devices/etc.-->
+        <TabItem Header="Settings">
+            <Grid Margin="5, 5, 0, 5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal" Grid.Row="0">
+                    <Label Content="Output Device:"/>
+                    <ComboBox Name="settingsOutputDevices" Width="150" Grid.Row="1">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Name}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</Window>
