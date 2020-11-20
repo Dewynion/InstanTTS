@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 using InstanTTS.Audio;
 using InstanTTS.Data;
+using System.Windows.Data;
+using System.Windows;
 
 namespace InstanTTS.Speech
 {
@@ -28,19 +30,20 @@ namespace InstanTTS.Speech
         /// <summary>
         /// Queue of TTS tasks. See <see cref="SpeechString"/> for the data contained in each entry.
         /// </summary>
-        public static ObservableQueue<SpeechString> ttsQueue;
+        public ObservableQueue<SpeechString> TTSQueue { get; private set; }
 
         /// <summary>
         /// History of TTS tasks.
         /// </summary>
-        public static ObservableQueue<SpeechString> ttsHistory;
+        public ObservableQueue<SpeechString> TTSHistory { get; private set; }
+        
 
         // Queue sized is capped. This is only somewhat due to memory and mostly a weak attempt to
         // stop people from loading up a bevvy of TTS messages and leaving them to play.
         private const int MAX_QUEUE_SIZE = 5;
 
         /// <summary>
-        /// The task responsible for managing <see cref="ttsQueue"/>. If there are entries left in the queue, dequeues the next and plays it.
+        /// The task responsible for managing <see cref="TTSQueue"/>. If there are entries left in the queue, dequeues the next and plays it.
         /// </summary>
         private Task _queueTask;
 
@@ -51,8 +54,8 @@ namespace InstanTTS.Speech
 
         public SpeechSynthManager()
         {
-            ttsQueue = new ObservableQueue<SpeechString>();
-            ttsHistory = new ObservableQueue<SpeechString>();
+            TTSQueue = new ObservableQueue<SpeechString>();
+            TTSHistory = new ObservableQueue<SpeechString>();
             _queueTaskCt = new CancellationTokenSource();
             var token = _queueTaskCt.Token;
             _queueTask = Task.Run(async () =>
@@ -62,11 +65,15 @@ namespace InstanTTS.Speech
                     // cancel if requested.
                     if (token.IsCancellationRequested)
                         return;
-                    
+
                     // if the queue has entries, play the next one.
-                    if (ttsQueue.Count > 0)
+                    if (TTSQueue.Count > 0)
+                    {
                         // this will await until the TTS clip has finished playing.
-                        await Speak(ttsQueue.Dequeue());
+                        SpeechString str = TTSQueue.Peek();
+                        await Application.Current.Dispatcher.BeginInvoke(new Action(() => this.TTSQueue.Dequeue()));
+                        await Speak(str);
+                    }
                 }
             }, token);
 
@@ -91,19 +98,19 @@ namespace InstanTTS.Speech
             if (!IsQueueFull())
             {
                 SpeechString data = new SpeechString(text, voice, rate, volume, device);
-                ttsQueue.Enqueue(data);
-                ttsHistory.Enqueue(data);
+                TTSQueue.Enqueue(data);
+                TTSHistory.Enqueue(data);
             }
         }
 
         public bool IsQueueFull()
         {
-            return ttsQueue.Count >= MAX_QUEUE_SIZE;
+            return TTSQueue.Count >= MAX_QUEUE_SIZE;
         }
 
         public int QueueSize()
         {
-            return ttsQueue.Count;
+            return TTSQueue.Count;
         }
 
         /// <summary>

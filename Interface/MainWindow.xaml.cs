@@ -31,7 +31,8 @@ namespace InstanTTS
             if (settingsOutputDevices.Items.Count > 0)
                 settingsOutputDevices.SelectedItem = settingsOutputDevices.Items[0];
 
-            speechHistory.ItemsSource = SpeechSynthManager.ttsHistory;
+            speechHistory.ItemsSource = SpeechSynthManager.Instance.TTSHistory;
+            speechQueue.ItemsSource = SpeechSynthManager.Instance.TTSQueue;
 
             // set up sliders with their appropriate range of values
             // it's not always good practice to do this in code, but I made an exception here because
@@ -150,6 +151,16 @@ namespace InstanTTS
         {
             if (e.Key == Key.Enter)
                 Speak();
+        }
+
+        private void speechSkip_Click(object sender, RoutedEventArgs e)
+        {
+            AudioManager.Instance.Stop();
+        }
+
+        private void speechPause_Click(object sender, RoutedEventArgs e)
+        {
+            AudioManager.Instance.TogglePaused();
         }
     }
 }
