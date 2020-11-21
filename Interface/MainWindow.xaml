@@ -34,7 +34,7 @@
                         </Grid.RowDefinitions>
 
                         <!--Label for speech history.-->
-                        <TextBlock Text="History:" Grid.Row="0"/>
+                        <TextBlock Text="History:" Grid.Row="0" HorizontalAlignment="Left" Width="481"/>
 
                         <!--Speech history.-->
                         <Border Grid.Row="1" BorderThickness="1" BorderBrush="Gray">
@@ -159,8 +159,41 @@
                         </Grid>
                         <Slider Name="speechVolumeSlider" TickFrequency="5" IsSnapToTickEnabled="True" Margin="10,0" Grid.Row="7"/>
 
-                        <!--Displays the queue of TTS to be played.-->
+                        <!--Displays the queue of TTS to be played, along with playback controls.-->
                         <Border Margin="10, 0" BorderThickness="1" BorderBrush="Gray" Grid.Row="9">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="25"/>
+                                </Grid.RowDefinitions>
+                                
+                                <!--Queue.-->
+                                <ListBox Name="speechQueue" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel VerticalAlignment="Top"/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Width="Auto">
+                                                <TextBlock Text="{Binding Path=Text, Mode=OneWay}" TextWrapping="WrapWithOverflow" ToolTip="{Binding Path=Text, Mode=OneWay}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+
+
+                                <!--Playback controls.-->
+                                <Grid Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Name="speechPause" Content="Pause" Click="speechPause_Click" Grid.Column="0"/>
+                                    <Button Name="speechSkip" Content="Skip" Click="speechSkip_Click" Grid.Column="1"/>
+                                </Grid>
+                            </Grid>
                         </Border>
                     </Grid>
                 </Grid>

@@ -2,10 +2,18 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Threading;
 using NAudio.Wave;
 
 namespace InstanTTS.Audio
 {
+    internal enum PlaybackState
+    {
+        Playing,
+        Paused,
+        Stopped
+    }
+
     internal class AudioManager : IDisposable
     {
         // Instance of this singleton class.
@@ -18,6 +26,7 @@ namespace InstanTTS.Audio
         // class-level in case I end up needing them for something later
         private WaveOutEvent waveOut;
         private WaveFileReader waveReader;
+        private PlaybackState playbackState = PlaybackState.Stopped;
 
         public AudioManager()
         {
@@ -48,7 +57,7 @@ namespace InstanTTS.Audio
         {
             // Make sure the memory stream is read from the start.
             stream.Seek(0, SeekOrigin.Begin);
-            
+
             // These are disposed of after the using block.
             // The reason they need to be instantiated anew every time Play is called is
             // because the reader must be recreated with the new memory stream, while the
@@ -61,9 +70,56 @@ namespace InstanTTS.Audio
                 // Initialize the player with the .wav data produced by the reader.
                 waveOut.Init(waveReader);
                 waveOut.Play();
-                // Suspend this task for the duration of the audio clip.
-                await Task.Delay(Convert.ToInt32(waveReader.TotalTime.TotalMilliseconds));
+                playbackState = PlaybackState.Playing;
+
+                int endTime = Environment.TickCount + Convert.ToInt32(waveReader.TotalTime.TotalMilliseconds);
+                while (Environment.TickCount < endTime)
+                {
+                    if (playbackState == PlaybackState.Stopped)
+                        break;
+                    else if (playbackState == PlaybackState.Paused)
+                        endTime = Environment.TickCount + RemainingTimeMillis();
+                }
+                playbackState = PlaybackState.Stopped;
             }
+        }
+
+        public void Stop()
+        {
+            playbackState = PlaybackState.Stopped;
+            if (waveOut != null)
+                waveOut.Stop();
+        }
+
+        public void TogglePaused()
+        {
+            switch (playbackState)
+            {
+                case PlaybackState.Paused:
+                    playbackState = PlaybackState.Playing;
+                    if (waveOut != null)
+                        waveOut.Play();
+                    break;
+                case PlaybackState.Playing:
+                    playbackState = PlaybackState.Paused;
+                    if (waveOut != null)
+                        waveOut.Pause();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public PlaybackState GetPlaybackState()
+        {
+            return playbackState;
+        }
+
+        public int RemainingTimeMillis()
+        {
+            if (waveReader != null)
+                return Convert.ToInt32(waveReader.TotalTime.TotalMilliseconds) - Convert.ToInt32(waveReader.CurrentTime.TotalMilliseconds);
+            return 0;
         }
 
         public void Dispose()
