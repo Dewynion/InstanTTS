@@ -53,7 +53,7 @@ namespace InstanTTS.Audio
             Instance = this;
         }
 
-        public async Task Play(MemoryStream stream, int deviceNumber = -1)
+        public void Play(MemoryStream stream, int deviceNumber = -1)
         {
             // Make sure the memory stream is read from the start.
             stream.Seek(0, SeekOrigin.Begin);
@@ -97,13 +97,11 @@ namespace InstanTTS.Audio
             {
                 case PlaybackState.Paused:
                     playbackState = PlaybackState.Playing;
-                    if (waveOut != null)
-                        waveOut.Play();
+                    waveOut?.Play();
                     break;
                 case PlaybackState.Playing:
                     playbackState = PlaybackState.Paused;
-                    if (waveOut != null)
-                        waveOut.Pause();
+                    waveOut?.Pause();
                     break;
                 default:
                     break;
@@ -117,9 +115,7 @@ namespace InstanTTS.Audio
 
         public int RemainingTimeMillis()
         {
-            if (waveReader != null)
-                return Convert.ToInt32(waveReader.TotalTime.TotalMilliseconds) - Convert.ToInt32(waveReader.CurrentTime.TotalMilliseconds);
-            return 0;
+            return Convert.ToInt32(waveReader?.TotalTime.TotalMilliseconds) - Convert.ToInt32(waveReader?.CurrentTime.TotalMilliseconds);
         }
 
         public void Dispose()

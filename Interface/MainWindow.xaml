@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:InstanTTS"
         xmlns:helper="clr-namespace:InstanTTS.Interface.Controls"
         mc:Ignorable="d"
-        Title="InstanTTS" Height ="600" MinHeight="600" Width="650" MinWidth="650">
+        Title="InstanTTS" Height ="600" MinHeight="600" Width="650" MinWidth="650"
+        FontFamily="Calibri" FontSize="12">
     <!--Overarching tab panel.-->
     <TabControl>
         <!--Tab for speech-related functions and options.-->
@@ -108,19 +109,19 @@
                             <RowDefinition Height="25"/>
                             <!--margin row because yeah sure-->
                             <RowDefinition Height="10"/>
-                            
+
                             <!--Rate slider + field-->
                             <RowDefinition Height="20"/>
                             <RowDefinition Height="20"/>
-                            
+
                             <RowDefinition Height="10"/>
-                            
+
                             <!--Volume slider + field-->
                             <RowDefinition Height="20"/>
                             <RowDefinition Height="20"/>
-                            
+
                             <RowDefinition Height="10"/>
-                            
+
                             <!--TTS queue-->
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
@@ -166,7 +167,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="25"/>
                                 </Grid.RowDefinitions>
-                                
+
                                 <!--Queue.-->
                                 <ListBox Name="speechQueue" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                                     <ListBox.ItemsPanel>
@@ -213,19 +214,43 @@
         <!--Settings for audio devices/etc.-->
         <TabItem Header="Settings">
             <Grid Margin="5, 5, 0, 5">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="25"/>
-                </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal" Grid.Row="0">
-                    <Label Content="Output Device:"/>
-                    <ComboBox Name="settingsOutputDevices" Width="150" Grid.Row="1">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=Name}"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </StackPanel>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Content="Sound Settings" FontWeight="bold" HorizontalAlignment="Center" Grid.Row="0"/>
+                    <!--Output device-->
+                    <StackPanel Orientation="Horizontal" Grid.Row="1">
+                        <Label Content="Output Device:"/>
+                        <ComboBox Name="settingsOutputDevices" Width="150" Grid.Row="1">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=Name}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Content="Hotkeys" FontWeight="bold" HorizontalAlignment="Center" Grid.Row="0"/>
+                    <ListBox Grid.Row="1">
+                        
+                    </ListBox>
+                </Grid>
             </Grid>
         </TabItem>
     </TabControl>

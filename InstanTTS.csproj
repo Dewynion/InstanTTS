@@ -78,9 +78,12 @@
     <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="Audio\SoundDevice.cs" />
     <Compile Include="Data\ObservableQueue.cs" />
+    <Compile Include="GlobalHook.cs" />
     <Compile Include="Interface\Controls\EditableSlider.xaml.cs">
       <DependentUpon>EditableSlider.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interface\HotkeyData.cs" />
+    <Compile Include="Interface\HotkeyManager.cs" />
     <Compile Include="Speech\SpeechString.cs" />
     <Compile Include="Speech\SpeechSynth.cs" />
     <Page Include="Interface\Controls\EditableSlider.xaml">

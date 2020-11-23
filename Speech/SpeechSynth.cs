@@ -141,7 +141,7 @@ namespace InstanTTS.Speech
                 // "speaks" the text directly into the memory stream
                 synth.Speak(builder);
                 // then block while the speech is being played.
-                await AudioManager.Instance.Play(stream, speech.Device.DeviceNumber);
+                await Task.Run(() => AudioManager.Instance.Play(stream, speech.Device.DeviceNumber));
             }
         }
 
