@@ -4,12 +4,20 @@ namespace InstanTTS.Interface
 {
     internal struct HotkeyData
     {
-        public string Text { get; private set; }
         public Key Key { get; private set; }
-        public HotkeyData(string text, Key key)
+        public ModifierKeys ModifierKeys;
+        public string Display
         {
-            Text = text;
+            get
+            {
+                return this.ModifierKeys.ToString() + " " + Key.ToString();
+            }
+        }
+
+        public HotkeyData(Key key, ModifierKeys modifiers)
+        {
             Key = key;
+            ModifierKeys = modifiers;
         }
     }
 }

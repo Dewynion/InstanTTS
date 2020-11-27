@@ -6,6 +6,8 @@ using System.Windows.Input;
 
 using InstanTTS.Speech;
 using InstanTTS.Audio;
+using InstanTTS.Interface;
+using System.Text;
 
 namespace InstanTTS
 {
@@ -15,6 +17,13 @@ namespace InstanTTS
     public partial class MainWindow : Window
     {
         public static MainWindow Instance;
+
+        private const string NewHotkeyDefault = "Click to set";
+        private const string NewHotkeyCapture = "Press a key...";
+
+        private bool captureInput = false;
+        private bool assignedNewHotkey = false;
+        private HotkeyData newHotkeyData;
 
         public MainWindow()
         {
@@ -26,13 +35,14 @@ namespace InstanTTS
             speechVoices.ItemsSource = SpeechSynthManager.Voices;
             if (speechVoices.Items.Count > 0)
                 speechVoices.SelectedItem = speechVoices.Items[0];
-            
+
             settingsOutputDevices.ItemsSource = AudioManager.OutDevices;
             if (settingsOutputDevices.Items.Count > 0)
                 settingsOutputDevices.SelectedItem = settingsOutputDevices.Items[0];
 
             speechHistory.ItemsSource = SpeechSynthManager.Instance.TTSHistory;
             speechQueue.ItemsSource = SpeechSynthManager.Instance.TTSQueue;
+            settingsHotkeys.ItemsSource = HotkeyManager.Instance.Hotkeys;
 
             // set up sliders with their appropriate range of values
             // it's not always good practice to do this in code, but I made an exception here because
@@ -161,6 +171,53 @@ namespace InstanTTS
         private void speechPause_Click(object sender, RoutedEventArgs e)
         {
             AudioManager.Instance.TogglePaused();
+        }
+
+        private void settingsNewHotkeyKey_Click(object sender, RoutedEventArgs e)
+        {
+            captureInput = !captureInput;
+            if (captureInput)
+                settingsNewHotkeyKey.Content = NewHotkeyCapture;
+            else
+                settingsNewHotkeyKey.Content = NewHotkeyDefault;
+        }
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {            
+            if (captureInput)
+            {
+                e.Handled = true;
+                Key key = e.Key == Key.System ? e.SystemKey : e.Key;
+                if (key == Key.LeftShift || key == Key.RightShift
+                    || key == Key.LeftCtrl || key == Key.RightCtrl
+                    || key == Key.LeftAlt || key == Key.RightAlt
+                    || key == Key.LWin || key == Key.RWin)
+                    return;
+                // ignore all system keys as base input
+                StringBuilder hotkeyName = new StringBuilder();
+                if ((Keyboard.Modifiers & ModifierKeys.Control) != 0)
+                    hotkeyName.Append("Ctrl+");
+                if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0)
+                    hotkeyName.Append("Shift+");
+                if ((Keyboard.Modifiers & ModifierKeys.Alt) != 0)
+                    hotkeyName.Append("Alt+");
+                hotkeyName.Append(key.ToString());
+                settingsNewHotkeyKey.Content = hotkeyName;
+                newHotkeyData = new HotkeyData(key, Keyboard.Modifiers);
+                captureInput = false;
+                assignedNewHotkey = true;
+            }
+        }
+
+        private void settingsAddHotkey_Click(object sender, RoutedEventArgs e)
+        {
+            if (assignedNewHotkey && settingsNewHotkeyText.Text != null)
+            {
+                HotkeyManager.Instance.AddHotkey(newHotkeyData.Key, newHotkeyData.ModifierKeys, settingsNewHotkeyText.Text);
+                settingsNewHotkeyText.Text = "";
+                settingsNewHotkeyKey.Content = NewHotkeyDefault;
+                assignedNewHotkey = false;
+            }
         }
     }
 }

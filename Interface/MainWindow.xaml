@@ -7,7 +7,8 @@
         xmlns:helper="clr-namespace:InstanTTS.Interface.Controls"
         mc:Ignorable="d"
         Title="InstanTTS" Height ="600" MinHeight="600" Width="650" MinWidth="650"
-        FontFamily="Calibri" FontSize="12">
+        FontFamily="Calibri" FontSize="12"
+        PreviewKeyDown="Window_PreviewKeyDown">
     <!--Overarching tab panel.-->
     <TabControl>
         <!--Tab for speech-related functions and options.-->
@@ -243,13 +244,39 @@
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="25"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="25"/>
                     </Grid.RowDefinitions>
 
                     <Label Content="Hotkeys" FontWeight="bold" HorizontalAlignment="Center" Grid.Row="0"/>
-                    <ListBox Grid.Row="1">
-                        
+                    <ListBox Name="settingsHotkeys" BorderThickness="0" Grid.Row="1">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="Black" BorderThickness="2">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Path=Value}" />
+                                        <TextBlock Text="{Binding Path=Key.Key}" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
                     </ListBox>
+                    <Grid Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="75"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="New hotkey: " Grid.Column="0"/>
+                        <Button Name="settingsNewHotkeyKey" Content="Click to set" Click="settingsNewHotkeyKey_Click" Grid.Column="1"/>
+                        <Label Content="Text: " Grid.Column="2"/>
+                        <TextBox Name="settingsNewHotkeyText" Grid.Column="3"/>
+                    </Grid>
+                    <Button Name="settingsAddHotkey" Content="Add Hotkey" Click="settingsAddHotkey_Click" Width="150" Grid.Row="5"/>
                 </Grid>
             </Grid>
         </TabItem>
