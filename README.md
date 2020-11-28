@@ -2,7 +2,7 @@
 A program designed to allow people to use TTS through voice chat in conjunction with VB Virtual Audio Cable.
 
 ## Usage
-I'm holding off putting out an executable because I'm still planning on adding a secondary output device (so you can hear what's being played while also using a virtual audio device to play audio through input), but I keep putting this off and don't know why.
+I'm holding off putting out an executable because ~~I'm still planning on adding a secondary output device (so you can hear what's being played while also using a virtual audio device to play audio through input), but I keep putting this off and don't know why.~~ i forgot how github releases works
 
 If you want to use the software as-is, clone the repository, install NAudio via NuGet, and build the executable from source.
 
