@@ -14,14 +14,19 @@ namespace InstanTTS.Interface
 
         public HotkeyManager()
         {
-            Hotkeys = new Dictionary<HotkeyData, string>();
+            Hotkeys = new Dictionary<HotkeyData, string>();            
             Instance = this;
         }
 
         public bool HasHotkey(Key key, ModifierKeys modifierKeys)
         {
             // since HotkeyData is a struct, this is fine
-            return Hotkeys.ContainsKey(new HotkeyData(key, modifierKeys));
+            return HasHotkey(new HotkeyData(key, modifierKeys));
+        }
+
+        public bool HasHotkey(HotkeyData data)
+        {
+            return Hotkeys.ContainsKey(data);
         }
 
         public void AddHotkey(Key key, ModifierKeys modifierKeys, string text)
@@ -36,6 +41,17 @@ namespace InstanTTS.Interface
         { 
             Hotkeys.TryGetValue(new HotkeyData(key, modifierKeys), out string text);
             return text;
+        }
+
+        public void DeleteHotkey(Key key, ModifierKeys modifierKeys)
+        {
+            DeleteHotkey(new HotkeyData(key, modifierKeys));
+        }
+
+        public void DeleteHotkey(HotkeyData data)
+        {
+            if (HasHotkey(data))
+                Hotkeys.Remove(data);
         }
     }
 }

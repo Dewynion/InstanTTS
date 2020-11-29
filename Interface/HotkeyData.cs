@@ -10,7 +10,7 @@ namespace InstanTTS.Interface
         {
             get
             {
-                return this.ModifierKeys.ToString() + " " + Key.ToString();
+                return (ModifierKeys != ModifierKeys.None ? this.ModifierKeys.ToString() + "+" : "") + Key.ToString();
             }
         }
 

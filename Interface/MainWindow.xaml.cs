@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Speech.Synthesis;
@@ -8,6 +9,7 @@ using InstanTTS.Speech;
 using InstanTTS.Audio;
 using InstanTTS.Interface;
 using System.Text;
+using System.Windows.Data;
 
 namespace InstanTTS
 {
@@ -218,6 +220,13 @@ namespace InstanTTS
                 settingsNewHotkeyKey.Content = NewHotkeyDefault;
                 assignedNewHotkey = false;
             }
+        }
+
+        private void settingsDeleteHotkey_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            KeyValuePair<HotkeyData, string> data = (KeyValuePair<HotkeyData, string>) button.DataContext;
+            HotkeyManager.Instance.DeleteHotkey(data.Key);
         }
     }
 }
