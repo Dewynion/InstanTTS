@@ -26,7 +26,8 @@ namespace InstanTTS.Audio
         // class-level in case I end up needing them for something later
         private WaveOutEvent waveOut1;
         private WaveOutEvent waveOut2;
-        private WaveFileReader waveReader;
+        private WaveFileReader waveReader1;
+        private WaveFileReader waveReader2;
         private PlaybackState playbackState = PlaybackState.Stopped;
 
         public AudioManager()
@@ -58,30 +59,34 @@ namespace InstanTTS.Audio
         {
             // Make sure the memory stream is read from the start.
             stream.Seek(0, SeekOrigin.Begin);
-
+            MemoryStream stream2 = new MemoryStream();
+            stream.CopyTo(stream2);
+            stream.Seek(0, SeekOrigin.Begin);
+            stream2.Seek(0, SeekOrigin.Begin);
             // These are disposed of after the using block.
             // The reason they need to be instantiated anew every time Play is called is
             // because the reader must be recreated with the new memory stream, while the
             // player must have a device number assigned before Init() is called.
-            using (waveReader = new WaveFileReader(stream))
+            using (waveReader1 = new WaveFileReader(stream))
+            using (waveReader2 = new WaveFileReader(stream2))
             using (waveOut1 = new WaveOutEvent())
             using (waveOut2 = new WaveOutEvent())
             {
                 // Set the device number to play through. Defaults to system default (-1).
                 waveOut1.DeviceNumber = primaryDeviceNumber;
                 // Initialize the player with the .wav data produced by the reader.
-                waveOut1.Init(waveReader);
+                waveOut1.Init(waveReader1);
                 waveOut1.Play();
                 // don't play if they're on the same device
                 if (primaryDeviceNumber != secondaryDeviceNumber)
                 {
                     waveOut2.DeviceNumber = secondaryDeviceNumber;
-                    waveOut2.Init(waveReader);
+                    waveOut2.Init(waveReader2);
                     waveOut2.Play();
                 }
                 playbackState = PlaybackState.Playing;
 
-                int endTime = Environment.TickCount + Convert.ToInt32(waveReader.TotalTime.TotalMilliseconds);
+                int endTime = Environment.TickCount + Convert.ToInt32(waveReader1.TotalTime.TotalMilliseconds);
                 while (Environment.TickCount < endTime)
                 {
                     if (playbackState == PlaybackState.Stopped)
@@ -126,8 +131,8 @@ namespace InstanTTS.Audio
 
         public int RemainingTimeMillis()
         {
-            if (waveReader != null)
-                return Convert.ToInt32(waveReader.TotalTime.TotalMilliseconds) - Convert.ToInt32(waveReader.CurrentTime.TotalMilliseconds);
+            if (waveReader1 != null)
+                return Convert.ToInt32(waveReader1.TotalTime.TotalMilliseconds) - Convert.ToInt32(waveReader1.CurrentTime.TotalMilliseconds);
             return 0;
         }
 

@@ -51,7 +51,7 @@
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="50"/>
+                                                        <ColumnDefinition Width="60"/>
                                                     </Grid.ColumnDefinitions>
 
                                                     <!--Template for displaying information from a SpeechString object.-->
@@ -91,7 +91,7 @@
                                                     </StackPanel>
 
                                                     <!--Button to repeat this SpeechString with all parameters.-->
-                                                    <Button Name="speechRepeat" ToolTip="Repeat" Width="25" Height="25" Grid.Column="1"/>
+                                                    <Button Name="speechRepeat" Click="speechRepeat_Click" ToolTip="Repeat" Content="Repeat" Width="50" Height="25" Grid.Column="1"/>
                                                 </Grid>
                                             </Border>
                                         </StackPanel>

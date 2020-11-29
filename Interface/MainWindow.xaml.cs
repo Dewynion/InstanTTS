@@ -182,5 +182,13 @@ namespace InstanTTS
         {
             AudioManager.Instance.TogglePaused();
         }
+
+        private void speechRepeat_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            int index = speechHistory.Items.IndexOf(button.DataContext);
+            SpeechString str = (SpeechString)speechHistory.Items[index];
+            SpeechSynthManager.Instance.QueueTTS(str.Text, str.PrimaryDevice, str.SecondaryDevice, str.Voice, str.Rate, str.Volume);
+        }
     }
 }
