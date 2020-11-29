@@ -24,12 +24,16 @@ namespace InstanTTS
             // set up voices and output devices according to those registered with the system.
             // TODO: custom voices?
             speechVoices.ItemsSource = SpeechSynthManager.Voices;
-            if (speechVoices.Items.Count > 0)
+            if (SpeechSynthManager.Voices.Count > 0)
                 speechVoices.SelectedItem = speechVoices.Items[0];
             
-            settingsOutputDevices.ItemsSource = AudioManager.OutDevices;
-            if (settingsOutputDevices.Items.Count > 0)
-                settingsOutputDevices.SelectedItem = settingsOutputDevices.Items[0];
+            settingsOutputDevice1.ItemsSource = AudioManager.OutDevices;
+            settingsOutputDevice2.ItemsSource = AudioManager.OutDevices;
+            if (AudioManager.OutDevices.Count > 0)
+            {
+                settingsOutputDevice1.SelectedItem = settingsOutputDevice1.Items[0];
+                settingsOutputDevice2.SelectedItem = settingsOutputDevice2.Items[0];
+            }
 
             speechHistory.ItemsSource = SpeechSynthManager.Instance.TTSHistory;
             speechQueue.ItemsSource = SpeechSynthManager.Instance.TTSQueue;
@@ -69,10 +73,10 @@ namespace InstanTTS
         /// <summary>
         /// Retrieves the selected output device from the interface.
         /// </summary>
-        /// <returns>The <see cref="SoundDevice"/> selected by the user through <see cref="settingsOutputDevices"/>.</returns>
-        public SoundDevice GetOutputDevice()
+        /// <returns>The <see cref="SoundDevice"/> selected by the user through <see cref="settingsOutputDevice1"/>.</returns>
+        public SoundDevice GetOutputDevice1()
         {
-            var device = settingsOutputDevices.SelectedItem;
+            var device = settingsOutputDevice1.SelectedItem;
             if (device.GetType() != typeof(SoundDevice))
             {
                 Console.WriteLine("Selected sound device does not exist.");
@@ -81,9 +85,25 @@ namespace InstanTTS
             return (SoundDevice)device;
         }
 
-        public int GetOutputDeviceNumber()
+        public int GetOutputDevice1Number()
         {
-            return GetOutputDevice().DeviceNumber;
+            return GetOutputDevice1().DeviceNumber;
+        }
+
+        public SoundDevice GetOutputDevice2()
+        {
+            var device = settingsOutputDevice2.SelectedItem;
+            if (device.GetType() != typeof(SoundDevice))
+            {
+                Console.WriteLine("Selected sound device does not exist.");
+                return default;
+            }
+            return (SoundDevice)device;
+        }
+
+        public int GetOutputDevice2Number()
+        {
+            return GetOutputDevice2().DeviceNumber;
         }
 
         /// <summary>
@@ -108,7 +128,7 @@ namespace InstanTTS
         {
             if (speechContent.Text.Trim() != "" && !SpeechSynthManager.Instance.IsQueueFull())
             {
-                SpeechSynthManager.Instance.QueueTTS(speechContent.Text, GetOutputDevice(), GetCurrentVoice(), GetSpeechRate(), GetSpeechVolume());
+                SpeechSynthManager.Instance.QueueTTS(speechContent.Text, GetOutputDevice1(), GetOutputDevice2(), GetCurrentVoice(), GetSpeechRate(), GetSpeechVolume());
                 speechContent.Text = "";
             }
         }
@@ -161,6 +181,14 @@ namespace InstanTTS
         private void speechPause_Click(object sender, RoutedEventArgs e)
         {
             AudioManager.Instance.TogglePaused();
+        }
+
+        private void speechRepeat_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            int index = speechHistory.Items.IndexOf(button.DataContext);
+            SpeechString str = (SpeechString)speechHistory.Items[index];
+            SpeechSynthManager.Instance.QueueTTS(str.Text, str.PrimaryDevice, str.SecondaryDevice, str.Voice, str.Rate, str.Volume);
         }
     }
 }

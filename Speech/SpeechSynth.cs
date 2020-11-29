@@ -89,15 +89,15 @@ namespace InstanTTS.Speech
         /// Queues a TTS task if the queue isn't full.
         /// </summary>
         /// <param name="text">Text to speak.</param>
-        /// <param name="device">The <see cref="SoundDevice"/> to use when speaking.</param>
+        /// <param name="device1">The <see cref="SoundDevice"/> to use when speaking.</param>
         /// <param name="voice">The voice to use.</param>
         /// <param name="rate">The rate to speak this text at. Clamped to [<see cref="MIN_RATE"/>, <see cref="MAX_RATE"/>].</param>
         /// <param name="volume">The volume to speak this text at. Clamped to [<see cref="MIN_VOLUME"/>, <see cref="MAX_VOLUME"/>].</param>
-        public void QueueTTS(string text, SoundDevice device, InstalledVoice voice, int rate = DEFAULT_RATE, int volume = DEFAULT_VOLUME)
+        public void QueueTTS(string text, SoundDevice device1, SoundDevice device2, InstalledVoice voice, int rate = DEFAULT_RATE, int volume = DEFAULT_VOLUME)
         {
             if (!IsQueueFull())
             {
-                SpeechString data = new SpeechString(text, voice, rate, volume, device);
+                SpeechString data = new SpeechString(text, voice, rate, volume, device1, device2);
                 TTSQueue.Enqueue(data);
                 TTSHistory.Enqueue(data);
             }
@@ -141,7 +141,7 @@ namespace InstanTTS.Speech
                 // "speaks" the text directly into the memory stream
                 synth.Speak(builder);
                 // then block while the speech is being played.
-                await AudioManager.Instance.Play(stream, speech.Device.DeviceNumber);
+                await AudioManager.Instance.Play(stream, speech.PrimaryDevice.DeviceNumber, speech.SecondaryDevice.DeviceNumber);
             }
         }
 
