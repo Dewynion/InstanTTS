@@ -51,6 +51,8 @@ For convenience, these hotkeys will **not** play while the application has focus
 no mean to me :( i'm a broke college student who wrote this in a week for the sake of resume padding then realized it was actually a decent project idea
 
 - Ability to save and load settings profiles, including default settings.
-- Ability to remove hotkeys. Yes, really.
-- Ability to repeat any line from your speech history with one click. 
-    - This is unimplemented for the same reason as removing hotkeys - I'm still trying to work out an efficient method of fetching the associated list item. ~~WPF is nice and all, but it's an absolute chonker to get into~~
+- ~~Ability to remove hotkeys. Yes, really.~~ **done**
+- ~~Ability to repeat any line from your speech history with one click.~~ **done**
+    - add another button to repeat with current settings
+- Write an observable dictionary implementation so hotkeys update immediately.
+- Add the ability to edit hotkeys after creation.
