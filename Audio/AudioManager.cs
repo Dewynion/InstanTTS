@@ -70,7 +70,7 @@ namespace InstanTTS.Audio
             using (waveReader1 = new WaveFileReader(stream))
             using (waveReader2 = new WaveFileReader(stream2))
             using (waveOut1 = new WaveOutEvent())
-            using (waveOut2 = new WaveOutEvent())
+            using (waveOut2 = primaryDeviceNumber != secondaryDeviceNumber ? new WaveOutEvent() : null)
             {
                 // Set the device number to play through. Defaults to system default (-1).
                 waveOut1.DeviceNumber = primaryDeviceNumber;
@@ -78,7 +78,7 @@ namespace InstanTTS.Audio
                 waveOut1.Init(waveReader1);
                 waveOut1.Play();
                 // don't play if they're on the same device
-                if (primaryDeviceNumber != secondaryDeviceNumber)
+                if (waveOut2 != null)
                 {
                     waveOut2.DeviceNumber = secondaryDeviceNumber;
                     waveOut2.Init(waveReader2);
