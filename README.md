@@ -1,10 +1,12 @@
 # InstanTTS
 A program designed to allow people to use TTS through voice chat in conjunction with VB Virtual Audio Cable.
 
-## Usage
-I'm holding off putting out an executable because ~~I'm still planning on adding a secondary output device (so you can hear what's being played while also using a virtual audio device to play audio through input), but I keep putting this off and don't know why.~~ i forgot how github releases works
+Uses [NAudio](https://github.com/naudio/NAudio) by Mark Heath.
 
-If you want to use the software as-is, clone the repository, install NAudio via NuGet, and build the executable from source.
+## Usage
+Download the latest stable release, unzip the contents into a folder and run the executable.
+
+If you want to use a development, clone the repository, install NAudio via NuGet, and build the executable from source.
 
 In order to use the software *as intended* and not just to play text-to-speech for yourself, install [VB Virtual Audio Cable](https://vb-audio.com/Cable/) or any other virtual audio device of choice. Set your output device to `CABLE Input` or equivalent.
 
@@ -34,7 +36,7 @@ At the bottom of the TTS queue, you'll find the *pause* and *skip* buttons. Thes
 - *Skip* skips the current clip and goes straight to playing the next one.
 
 ### Settings
-The **Settings** tab currently only contains one thing in the main branch - the ability to set your *Output Device*.
+The **Settings** tab currently only contains one thing in the main branch - the ability to set your *Output Devices*.
 
 With the version available in the ```hotkeys``` branch, you may also configure custom hotkeys.
 1. Click the button next to `"New hotkey:"`.
@@ -53,6 +55,8 @@ no mean to me :( i'm a broke college student who wrote this in a week for the sa
 - Ability to save and load settings profiles, including default settings.
 - ~~Ability to remove hotkeys. Yes, really.~~ **done**
 - ~~Ability to repeat any line from your speech history with one click.~~ **done**
-    - add another button to repeat with current settings
+    - add another button to repeat with current settings ("repeat text")
 - Write an observable dictionary implementation so hotkeys update immediately.
 - Add the ability to edit hotkeys after creation.
+- An overlay so you don't have to tab out to type.
+- Program hotkeys (repeat, etc.).
