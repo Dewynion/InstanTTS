@@ -6,7 +6,7 @@ Uses [NAudio](https://github.com/naudio/NAudio) by Mark Heath.
 ## Usage
 Download the latest stable release, unzip the contents into a folder and run the executable.
 
-If you want to use a development, clone the repository, install NAudio via NuGet, and build the executable from source.
+If you want to use a development branch, clone the repository, install NAudio via NuGet, and build the executable from source.
 
 In order to use the software *as intended* and not just to play text-to-speech for yourself, install [VB Virtual Audio Cable](https://vb-audio.com/Cable/) or any other virtual audio device of choice. Set your output device to `CABLE Input` or equivalent.
 
@@ -50,6 +50,7 @@ For convenience, these hotkeys will **not** play while the application has focus
 
 ## Planned Features
 "Wow, basic functionality that still hasn't been implemented!" - you, probably
+
 no mean to me :( i'm a broke college student who wrote this in a week for the sake of resume padding then realized it was actually a decent project idea
 
 - Ability to save and load settings profiles, including default settings.
