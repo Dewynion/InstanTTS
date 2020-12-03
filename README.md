@@ -8,7 +8,7 @@ Download the latest stable release, unzip the contents into a folder and run the
 
 If you want to use a development branch, clone the repository, install NAudio via NuGet, and build the executable from source.
 
-In order to use the software *as intended* and not just to play text-to-speech for yourself, install [VB Virtual Audio Cable](https://vb-audio.com/Cable/) or any other virtual audio device of choice. Set your output device to `CABLE Input` or equivalent.
+In order to use the software *as intended* and not just to play text-to-speech for yourself, install [VB Virtual Audio Cable](https://vb-audio.com/Cable/) or any other virtual audio device of choice. Set your output device (under the **Settings** tab) to `CABLE Input` or equivalent, then set the input device for the target program (e.g. Discord voice chat) to `CABLE Output` or equivalent.
 
 **Disclaimer: I am not accountable for damage of any kind caused by the misuse of this software. This includes, but is not limited to:**
 - Users speaking the phrase "John Madden" on repeat in voice chats
